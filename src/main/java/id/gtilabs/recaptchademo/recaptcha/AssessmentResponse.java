@@ -5,6 +5,16 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /**
+ * Created by IntelliJ IDEA.
+ * Project : recaptcha-enterprise-demo
+ * User: hendisantika
+ * Email: hendisantika@gmail.com
+ * Telegram : @hendisantika34
+ * Date: 07/09/26
+ * Time: 11.16
+ */
+
+/**
  * Subset of the Assessment API response that this demo cares about.
  */
 @JsonIgnoreProperties(ignoreUnknown = true)

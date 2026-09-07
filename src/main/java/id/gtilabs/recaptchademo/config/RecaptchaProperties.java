@@ -4,6 +4,16 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.util.StringUtils;
 
 /**
+ * Created by IntelliJ IDEA.
+ * Project : recaptcha-enterprise-demo
+ * User: hendisantika
+ * Email: hendisantika@gmail.com
+ * Telegram : @hendisantika34
+ * Date: 07/09/26
+ * Time: 11.16
+ */
+
+/**
  * Configuration for reCAPTCHA Enterprise (the "new" reCAPTCHA that lives in the
  * Google Cloud console and is verified through the Assessment API, not the old
  * {@code /recaptcha/api/siteverify} endpoint).

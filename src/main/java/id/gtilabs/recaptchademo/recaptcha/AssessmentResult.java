@@ -4,6 +4,16 @@ import java.util.List;
 import java.util.Locale;
 
 /**
+ * Created by IntelliJ IDEA.
+ * Project : recaptcha-enterprise-demo
+ * User: hendisantika
+ * Email: hendisantika@gmail.com
+ * Telegram : @hendisantika34
+ * Date: 07/09/26
+ * Time: 11.16
+ */
+
+/**
  * What the controllers actually need: was the token usable, what did it score,
  * and does that clear our threshold.
  *

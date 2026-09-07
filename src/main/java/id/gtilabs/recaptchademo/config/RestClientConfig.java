@@ -7,6 +7,15 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.web.client.RestClient;
 
+/**
+ * Created by IntelliJ IDEA.
+ * Project : recaptcha-enterprise-demo
+ * User: hendisantika
+ * Email: hendisantika@gmail.com
+ * Telegram : @hendisantika34
+ * Date: 07/09/26
+ * Time: 11.16
+ */
 @Configuration(proxyBeanMethods = false)
 public class RestClientConfig {
 

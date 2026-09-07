@@ -20,6 +20,16 @@ import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestClientException;
 
 /**
+ * Created by IntelliJ IDEA.
+ * Project : recaptcha-enterprise-demo
+ * User: hendisantika
+ * Email: hendisantika@gmail.com
+ * Telegram : @hendisantika34
+ * Date: 07/09/26
+ * Time: 11.16
+ */
+
+/**
  * Calls the reCAPTCHA Enterprise Assessment API.
  *
  * <p>The old reCAPTCHA v2/v3 flow posted the token to
