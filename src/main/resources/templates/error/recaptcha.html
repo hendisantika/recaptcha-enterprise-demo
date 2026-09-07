@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/common :: head('Verification error')}"></head>
+<body>
+<nav th:replace="~{fragments/common :: nav}"></nav>
+
+<main class="wrap">
+    <h1>reCAPTCHA verification could not run</h1>
+    <div class="alert alert-error">
+        <code th:text="${errorMessage}">error</code>
+    </div>
+    <h3>Checklist</h3>
+    <ul>
+        <li>Is the <em>reCAPTCHA Enterprise API</em> enabled on project
+            <code th:text="${projectId}">project</code>?</li>
+        <li>Is <code>RECAPTCHA_API_KEY</code> set, and is that API key allowed to call the
+            reCAPTCHA Enterprise API?</li>
+        <li>Does the site key belong to this project, and is the current domain on its allow list?</li>
+        <li>Can this machine reach <code>recaptchaenterprise.googleapis.com</code>?</li>
+    </ul>
+    <p><a th:href="@{/}">Back to the overview</a></p>
+</main>
+</body>
+</html>

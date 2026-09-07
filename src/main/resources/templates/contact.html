@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/common :: head('Contact form')}"></head>
+<body>
+<nav th:replace="~{fragments/common :: nav}"></nav>
+
+<main class="wrap">
+    <h1>Protected contact form</h1>
+    <p class="lead">Same verification pipeline as the login page, but the action is
+        <code th:text="${action}">CONTACT</code>. Actions are what let you set different policies
+        &mdash; and read different traffic charts &mdash; per form.</p>
+
+    <div class="alert alert-ok" th:if="${submitted}">
+        Verified. A real application would queue the message for delivery at this point.
+    </div>
+    <div class="alert alert-error" th:if="${blocked}">
+        Blocked &mdash; the assessment did not clear the threshold, so the message was discarded.
+    </div>
+
+    <form th:action="@{/contact}" th:object="${contactForm}" method="post"
+          th:attr="data-recaptcha-action=${action}" novalidate>
+        <input type="hidden" th:field="*{recaptchaToken}">
+
+        <label for="name">Name</label>
+        <input type="text" id="name" th:field="*{name}" placeholder="Kang Hendi">
+        <p class="field-error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">error</p>
+
+        <label for="email">Email</label>
+        <input type="email" id="email" th:field="*{email}" placeholder="you@example.com">
+        <p class="field-error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">error</p>
+
+        <label for="message">Message</label>
+        <textarea id="message" rows="5" th:field="*{message}" placeholder="At least 10 characters…"></textarea>
+        <p class="field-error" th:if="${#fields.hasErrors('message')}" th:errors="*{message}">error</p>
+
+        <button type="submit">Send message</button>
+    </form>
+
+    <section th:replace="~{fragments/common :: assessmentPanel}"></section>
+</main>
+
+<div th:replace="~{fragments/common :: recaptchaScript}"></div>
+</body>
+</html>

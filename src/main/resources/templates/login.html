@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/common :: head('Login form')}"></head>
+<body>
+<nav th:replace="~{fragments/common :: nav}"></nav>
+
+<main class="wrap">
+    <h1>Protected login form</h1>
+    <p class="lead">This form mints a token for the action
+        <code th:text="${action}">LOGIN</code> and the server refuses to accept a token issued for
+        anything else.</p>
+
+    <div class="alert alert-ok" th:if="${submitted}">
+        Verified. A real application would authenticate the credentials at this point.
+    </div>
+    <div class="alert alert-error" th:if="${blocked}">
+        Blocked before the credential check &mdash; the assessment did not clear the threshold.
+    </div>
+
+    <form th:action="@{/login}" th:object="${loginForm}" method="post"
+          th:attr="data-recaptcha-action=${action}" novalidate>
+        <input type="hidden" th:field="*{recaptchaToken}">
+
+        <label for="email">Email</label>
+        <input type="email" id="email" th:field="*{email}" autocomplete="username" placeholder="you@example.com">
+        <p class="field-error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">error</p>
+
+        <label for="password">Password</label>
+        <input type="password" id="password" th:field="*{password}" autocomplete="current-password" placeholder="••••••••">
+        <p class="field-error" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">error</p>
+
+        <button type="submit">Sign in</button>
+        <p class="fineprint">Protected by reCAPTCHA Enterprise. No checkbox, no image grid &mdash;
+            the score comes from how the page was used.</p>
+    </form>
+
+    <section th:replace="~{fragments/common :: assessmentPanel}"></section>
+</main>
+
+<div th:replace="~{fragments/common :: recaptchaScript}"></div>
+</body>
+</html>

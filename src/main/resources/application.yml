@@ -1,0 +1,27 @@
+spring:
+  application:
+    name: recaptcha-enterprise-demo
+  thymeleaf:
+    cache: false
+
+server:
+  port: 8080
+  # Set to "framework" (or "native") only when this app really sits behind a trusted proxy.
+  # X-Forwarded-For is never parsed by hand: a forged header would poison the reCAPTCHA IP signal.
+  forward-headers-strategy: none
+
+recaptcha:
+  # Google Cloud project that owns the key (Console > Security > reCAPTCHA)
+  project-id: annisa-online
+  # Public site key - safe to render in the browser
+  site-key: 6Ld4G60tAAAAAAR7zStdCfEGT41hqpzz8HL1UVEF
+  # API key with the "reCAPTCHA Enterprise API" restriction. NEVER put this in a template.
+  # Leave empty to run the app in DEMO mode (simulated scores, no network calls).
+  api-key: ${RECAPTCHA_API_KEY:}
+  # Requests scoring below this are treated as suspicious
+  score-threshold: 0.5
+  endpoint: https://recaptchaenterprise.googleapis.com
+
+logging:
+  level:
+    id.gtilabs.recaptchademo: DEBUG

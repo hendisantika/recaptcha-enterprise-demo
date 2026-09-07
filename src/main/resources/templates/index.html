@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/common :: head('Overview')}"></head>
+<body>
+<nav th:replace="~{fragments/common :: nav}"></nav>
+
+<main class="wrap">
+    <h1>reCAPTCHA Enterprise, end to end</h1>
+    <p class="lead">
+        The classic reCAPTCHA v2/v3 flow posted a token and a shared secret to
+        <code>siteverify</code> and got back <code>{"success": true}</code>. The Google Cloud
+        version creates an <strong>assessment</strong> instead: the browser mints a token for a
+        named action, the server exchanges it for a risk score and reason codes, and the
+        application decides what to do with that score.
+    </p>
+
+    <ol class="flow">
+        <li>
+            <h3>Browser</h3>
+            <p>The page loads <code>enterprise.js?render=SITE_KEY</code>. On submit,
+                <code>grecaptcha.enterprise.execute(SITE_KEY, {action: 'LOGIN'})</code> returns a
+                token that is valid once, for two minutes.</p>
+        </li>
+        <li>
+            <h3>Your server</h3>
+            <p>POSTs the token to
+                <code>/v1/projects/<span th:text="${projectId}">project</span>/assessments</code>
+                with an API key. The site key is public; the API key never leaves the server.</p>
+        </li>
+        <li>
+            <h3>Decision</h3>
+            <p>Check <code>tokenProperties.valid</code>, confirm
+                <code>tokenProperties.action</code> is the action you expected, then compare
+                <code>riskAnalysis.score</code> to your own threshold
+                (<span th:text="${scoreThreshold}">0.5</span> here).</p>
+        </li>
+    </ol>
+
+    <div class="cards">
+        <a class="card" th:href="@{/login}">
+            <h3>Login form &rarr;</h3>
+            <p>Action <code>LOGIN</code>. Shows the score, the reason codes and the raw response.</p>
+        </a>
+        <a class="card" th:href="@{/contact}">
+            <h3>Contact form &rarr;</h3>
+            <p>Action <code>CONTACT</code>. Same pipeline, different action &mdash; proving the
+                action check is what binds a token to a specific form.</p>
+        </a>
+    </div>
+
+    <div class="alert alert-info" th:if="${demoMode}">
+        <strong>Demo mode.</strong> No API key is configured, so assessments are simulated with a
+        random score and no call leaves this machine. Set <code>RECAPTCHA_API_KEY</code> to talk to
+        the real Assessment API.
+    </div>
+
+    <table class="keyfacts">
+        <tr><th>Site key</th><td><code th:text="${siteKey}">key</code></td></tr>
+        <tr><th>Project</th><td><code th:text="${projectId}">project</code></td></tr>
+        <tr><th>Score threshold</th><td><code th:text="${scoreThreshold}">0.5</code></td></tr>
+    </table>
+</main>
+
+<div th:replace="~{fragments/common :: recaptchaScript}"></div>
+</body>
+</html>

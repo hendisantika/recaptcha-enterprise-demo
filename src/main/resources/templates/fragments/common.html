@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="head(pageTitle)">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="'reCAPTCHA Enterprise demo · ' + ${pageTitle}">reCAPTCHA Enterprise demo</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+    <!--/* The Enterprise script. render=SITE_KEY loads the invisible, score-based flow. */-->
+    <script th:unless="${demoMode}"
+            th:src="'https://www.google.com/recaptcha/enterprise.js?render=' + ${siteKey}" async defer></script>
+</head>
+<body>
+
+<nav th:fragment="nav" class="nav">
+    <a class="brand" th:href="@{/}">reCAPTCHA Enterprise demo</a>
+    <div class="links">
+        <a th:href="@{/}">Overview</a>
+        <a th:href="@{/login}">Login form</a>
+        <a th:href="@{/contact}">Contact form</a>
+    </div>
+    <span class="badge badge-demo" th:if="${demoMode}" title="No API key configured - scores are simulated">DEMO MODE</span>
+    <span class="badge badge-live" th:unless="${demoMode}" th:text="${projectId}">project</span>
+</nav>
+
+<!--/* Assessment result panel. Renders nothing when there is no assessment in the model. */-->
+<section th:fragment="assessmentPanel" th:if="${assessment != null}" class="panel"
+         th:classappend="'risk-' + ${assessment.riskBand()}">
+
+    <header class="panel-head">
+        <h2>Assessment result</h2>
+        <span class="verdict verdict-allow" th:if="${assessment.allowed()}">ALLOWED</span>
+        <span class="verdict verdict-block" th:unless="${assessment.allowed()}">BLOCKED</span>
+    </header>
+
+    <div th:if="${!assessment.tokenValid()}" class="alert alert-error">
+        Token rejected by reCAPTCHA &mdash;
+        <code th:text="${assessment.invalidReason()}">INVALID_REASON</code>
+        <p class="hint">Common causes: the token expired (they live two minutes), the token was already
+            used, the site key does not match, or the page domain is not on the key's allow list.</p>
+    </div>
+
+    <div th:if="${assessment.tokenValid()}">
+        <div class="score">
+            <div class="score-value" th:text="${assessment.scoreLabel()}">0.0</div>
+            <div class="score-bar">
+                <div class="score-fill" th:style="'width:' + ${assessment.scorePercent()} + '%'"></div>
+                <div class="score-threshold" th:style="'left:' + ${#numbers.formatDecimal(assessment.threshold() * 100, 1, 0)} + '%'"
+                     th:title="'threshold ' + ${assessment.threshold()}"></div>
+            </div>
+            <div class="score-legend">
+                <span>0.0 &middot; likely a bot</span>
+                <span th:text="'threshold ' + ${assessment.threshold()}">threshold</span>
+                <span>likely a human &middot; 1.0</span>
+            </div>
+        </div>
+
+        <dl class="facts">
+            <dt>Action in token</dt>
+            <dd>
+                <code th:text="${assessment.action()}">ACTION</code>
+                <span class="ok" th:if="${assessment.actionMatched()}">matches expected action</span>
+                <span class="bad" th:unless="${assessment.actionMatched()}">does NOT match the expected action</span>
+            </dd>
+            <dt>Hostname</dt>
+            <dd><code th:text="${assessment.hostname()} ?: '-'">-</code></dd>
+            <dt>Risk reasons</dt>
+            <dd>
+                <span th:if="${#lists.isEmpty(assessment.reasons())}" class="muted">none returned</span>
+                <span class="reason" th:each="reason : ${assessment.reasons()}" th:text="${reason}">REASON</span>
+            </dd>
+        </dl>
+    </div>
+
+    <details class="raw">
+        <summary>Raw Assessment API response</summary>
+        <pre th:text="${assessment.rawJson()}">{}</pre>
+    </details>
+</section>
+
+<!--/* Loaded once per page: mints a token for every form that declares an action. */-->
+<th:block th:fragment="recaptchaScript">
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        const RECAPTCHA_SITE_KEY = /*[[${siteKey}]]*/ '';
+        const RECAPTCHA_DEMO_MODE = /*[[${demoMode}]]*/ false;
+
+        document.querySelectorAll('form[data-recaptcha-action]').forEach(function (form) {
+            form.addEventListener('submit', function (event) {
+                // A token is single-use and expires after two minutes, so it is minted
+                // at submit time rather than on page load.
+                if (RECAPTCHA_DEMO_MODE) {
+                    // No API key configured: submit without a token, the server simulates a score.
+                    return;
+                }
+                event.preventDefault();
+
+                if (typeof grecaptcha === 'undefined' || !grecaptcha.enterprise) {
+                    alert('The reCAPTCHA script has not finished loading yet. Try again in a moment.');
+                    return;
+                }
+
+                const button = form.querySelector('button[type="submit"]');
+                const originalLabel = button ? button.textContent : null;
+                if (button) {
+                    button.disabled = true;
+                    button.textContent = 'Verifying…';
+                }
+
+                grecaptcha.enterprise.ready(function () {
+                    grecaptcha.enterprise
+                        .execute(RECAPTCHA_SITE_KEY, { action: form.dataset.recaptchaAction })
+                        .then(function (token) {
+                            form.querySelector('input[name="recaptchaToken"]').value = token;
+                            // form.submit() does not re-fire this handler, so no re-entrancy guard is needed.
+                            form.submit();
+                        })
+                        .catch(function (error) {
+                            console.error('reCAPTCHA execute failed', error);
+                            if (button) {
+                                button.disabled = false;
+                                button.textContent = originalLabel;
+                            }
+                            alert('reCAPTCHA could not issue a token: ' + error);
+                        });
+                });
+            });
+        });
+        /*]]>*/
+    </script>
+</th:block>
+
+</body>
+</html>
