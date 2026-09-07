@@ -11,11 +11,19 @@
         anything else.</p>
 
     <div class="alert alert-ok" th:if="${submitted}">
-        Verified. A real application would authenticate the credentials at this point.
+        Signed in as <span th:text="${demoEmail}">demo@gtilabs.id</span>.
     </div>
     <div class="alert alert-error" th:if="${blocked}">
         Blocked before the credential check &mdash; the assessment did not clear the threshold.
     </div>
+    <div class="alert alert-error" th:if="${invalidCredentials}">
+        Wrong email or password.
+    </div>
+
+    <p class="fineprint">
+        Demo account &mdash; email <code th:text="${demoEmail}">demo@gtilabs.id</code>,
+        password <code th:text="${demoPassword}">RecaptchaDemo123!</code>
+    </p>
 
     <form th:action="@{/login}" th:object="${loginForm}" method="post"
           th:attr="data-recaptcha-action=${action}" novalidate>

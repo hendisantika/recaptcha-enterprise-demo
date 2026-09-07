@@ -27,6 +27,10 @@ public class LoginController {
     /** Must match the action passed to grecaptcha.enterprise.execute() in login.html. */
     private static final String ACTION = "LOGIN";
 
+    /** Fixed demo account so the credential check has something to compare against. */
+    private static final String DEMO_EMAIL = "demo@gtilabs.id";
+    private static final String DEMO_PASSWORD = "RecaptchaDemo123!";
+
     private final RecaptchaService recaptchaService;
 
     public LoginController(RecaptchaService recaptchaService) {
@@ -37,6 +41,8 @@ public class LoginController {
     public String showForm(Model model) {
         model.addAttribute("loginForm", new LoginForm());
         model.addAttribute("action", ACTION);
+        model.addAttribute("demoEmail", DEMO_EMAIL);
+        model.addAttribute("demoPassword", DEMO_PASSWORD);
         return "login";
     }
 
@@ -47,6 +53,8 @@ public class LoginController {
                          Model model) {
 
         model.addAttribute("action", ACTION);
+        model.addAttribute("demoEmail", DEMO_EMAIL);
+        model.addAttribute("demoPassword", DEMO_PASSWORD);
 
         // Score the request first: a bot that submits garbage should never reach the
         // credential check, and the assessment is interesting even when the form is invalid.
@@ -61,7 +69,13 @@ public class LoginController {
             return "login";
         }
 
-        // Real applications would authenticate here. This demo just reports the verdict.
+        boolean credentialsMatch = DEMO_EMAIL.equalsIgnoreCase(loginForm.getEmail())
+                && DEMO_PASSWORD.equals(loginForm.getPassword());
+        if (!credentialsMatch) {
+            model.addAttribute("invalidCredentials", true);
+            return "login";
+        }
+
         model.addAttribute("submitted", true);
         return "login";
     }
