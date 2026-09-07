@@ -7,8 +7,6 @@ import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import id.gtilabs.recaptchademo.config.RecaptchaProperties;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
@@ -18,6 +16,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestClientException;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 
 /**
  * Created by IntelliJ IDEA.
@@ -100,7 +100,7 @@ public class RecaptchaService {
         try {
             response = objectMapper.readValue(rawJson, AssessmentResponse.class);
         }
-        catch (JsonProcessingException ex) {
+        catch (JacksonException ex) {
             throw new RecaptchaException("Could not parse the assessment response", ex);
         }
 
@@ -176,7 +176,7 @@ public class RecaptchaService {
             Object tree = objectMapper.readValue(rawJson, Object.class);
             return objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(tree);
         }
-        catch (JsonProcessingException ex) {
+        catch (JacksonException ex) {
             return rawJson;
         }
     }
