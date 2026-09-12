@@ -8,7 +8,7 @@ the app applies its own policy to that score.
 Wired for project `annisa-online` and site key `6Ld4G60t…UVEF` — change both in
 `src/main/resources/application.yml`.
 
-![Overview page](docs/screenshot.jpg)
+![Overview page](docs/screenshot-overview.jpg)
 
 ## Old vs new
 
@@ -64,6 +64,10 @@ console's REST snippet — same result, but it cannot end up in a proxy or acces
 | `/` | — | The three-step flow, and the key/project/threshold in use |
 | `/login` | `LOGIN` | Score, reason codes, raw assessment JSON |
 | `/contact` | `CONTACT` | Same pipeline, different action |
+
+| Login form | Contact form |
+|---|---|
+| ![Login form](docs/screenshot-login.jpg) | ![Contact form](docs/screenshot-contact.jpg) |
 
 Each submission renders an **Assessment result** panel: the score on a 0.0–1.0 bar with your
 threshold marked, whether the action in the token matched the action the server expected, the risk
