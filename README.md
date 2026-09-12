@@ -8,6 +8,8 @@ the app applies its own policy to that score.
 Wired for project `annisa-online` and site key `6Ld4G60t…UVEF` — change both in
 `src/main/resources/application.yml`.
 
+![Overview page](docs/screenshot.jpg)
+
 ## Old vs new
 
 | | reCAPTCHA v2 / v3 (classic) | reCAPTCHA Enterprise |
