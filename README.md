@@ -68,6 +68,7 @@ console's REST snippet — same result, but it cannot end up in a proxy or acces
 | Login form | Contact form |
 |---|---|
 | ![Login form](docs/screenshot-login.jpg) | ![Contact form](docs/screenshot-contact.jpg) |
+| ![Login form assessment result](docs/screenshot-login-response.jpg) | ![Contact form assessment result](docs/screenshot-contact-response.jpg) |
 
 Each submission renders an **Assessment result** panel: the score on a 0.0–1.0 bar with your
 threshold marked, whether the action in the token matched the action the server expected, the risk
